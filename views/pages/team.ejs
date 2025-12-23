@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="bg-gray-50">
+    <%- include('../partials/header') %>
+
+        <section class="py-20">
+            <div class="container mx-auto px-6">
+                <h1 class="text-4xl md:text-5xl font-bold font-serif text-center mb-12">Our Team</h1>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <% team.forEach(member=> { %>
+                        <div class="bg-white p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition">
+                            <div
+                                class="w-32 h-32 bg-gray-300 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl">
+                                👤
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">
+                                <%= member.name %>
+                            </h3>
+                            <p class="text-primary font-semibold mb-3">
+                                <%= member.role %>
+                            </p>
+                            <% if (member.bio) { %>
+                                <p class="text-gray-600 text-sm">
+                                    <%= member.bio %>
+                                </p>
+                                <% } %>
+                        </div>
+                        <% }) %>
+                </div>
+            </div>
+        </section>
+
+        <%- include('../partials/footer') %>
+            <script src="/js/main.js"></script>
+</body>
+
+</html>

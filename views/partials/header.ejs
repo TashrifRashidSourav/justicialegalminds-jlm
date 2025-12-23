@@ -1,0 +1,33 @@
+<header class="bg-gray-900 text-white">
+    <nav class="container mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+            <a href="/" class="text-2xl font-bold font-serif text-primary">Justicia Legal Minds</a>
+
+            <!-- Mobile menu button -->
+            <button id="mobile-menu-btn" class="md:hidden text-white focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                    </path>
+                </svg>
+            </button>
+
+            <!-- Desktop menu -->
+            <div class="hidden md:flex space-x-8">
+                <a href="/" class="hover:text-primary transition">Home</a>
+                <a href="/about" class="hover:text-primary transition">About</a>
+                <a href="/services" class="hover:text-primary transition">Services</a>
+                <a href="/team" class="hover:text-primary transition">Team</a>
+                <a href="/contact" class="hover:text-primary transition">Contact</a>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden mt-4 space-y-2">
+            <a href="/" class="block py-2 hover:text-primary transition">Home</a>
+            <a href="/about" class="block py-2 hover:text-primary transition">About</a>
+            <a href="/services" class="block py-2 hover:text-primary transition">Services</a>
+            <a href="/team" class="block py-2 hover:text-primary transition">Team</a>
+            <a href="/contact" class="block py-2 hover:text-primary transition">Contact</a>
+        </div>
+    </nav>
+</header>
