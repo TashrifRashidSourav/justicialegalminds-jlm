@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %> - Admin
+    </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+
+        .sidebar {
+            min-height: 100vh;
+            background: #212529;
+            position: fixed;
+            width: 250px;
+        }
+
+        .sidebar a {
+            color: #adb5bd;
+            padding: 10px 20px;
+            display: block;
+            text-decoration: none;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #343a40;
+            color: #fff;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .preview-box {
+            padding: 60px 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .color-input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .color-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            border: 2px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="sidebar">
+        <div class="p-3">
+            <h5 class="text-white">Admin Panel</h5>
+            <p class="text-muted small">Welcome, admin</p>
+        </div>
+        <div>
+            <a href="/admin/dashboard"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="/admin/services"><i class="fas fa-briefcase"></i> Services</a>
+            <a href="/admin/team"><i class="fas fa-users"></i> Team</a>
+            <a href="/admin/inquiries"><i class="fas fa-envelope"></i> Inquiries</a>
+            <a href="/admin/settings" class="active"><i class="fas fa-cog"></i> Website Settings</a>
+            <hr class="bg-secondary">
+            <a href="/"><i class="fas fa-globe"></i> View Website</a>
+            <a href="/admin/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <h2><i class="fas fa-cog"></i>
+            <%= title %>
+        </h2>
+        <p class="text-muted">Customize your website's homepage hero section</p>
+
+        <!-- General Settings Form -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5><i class="fas fa-sliders-h"></i> General Settings</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="section_key" value="general_info">
+
+                    <div class="mb-3">
+                        <label class="form-label">Website Logo</label>
+                        <% if (generalData.logo) { %>
+                            <div class="mb-2">
+                                <img src="<%= generalData.logo %>" alt="Current Logo"
+                                    style="height: 50px; background: #eee; padding: 5px; border-radius: 4px;">
+                            </div>
+                            <% } %>
+                                <input type="file" name="logo" class="form-control" accept="image/*">
+                                <small class="text-muted">Upload a transparent PNG for best results.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Logo Height (px)</label>
+                        <input type="number" name="logo_height" class="form-control"
+                            value="<%= generalData.logo_height %>" min="20" max="100">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save General Settings
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Live Preview -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5><i class="fas fa-eye"></i> Live Preview</h5>
+            </div>
+            <div class="card-body p-0">
+                <div id="preview" class="preview-box"
+                    style="background-color: <%= heroData.backgroundColor %>; background-image: url('<%= heroData.backgroundImage %>');">
+                    <h1 id="preview-title"
+                        style="color: <%= heroData.textColor %>; font-size: 3rem; font-weight: bold;">
+                        <%= heroData.title %>
+                    </h1>
+                    <p id="preview-subtitle"
+                        style="color: <%= heroData.subtitleColor %>; font-size: 1.5rem; margin: 20px 0;">
+                        <%= heroData.subtitle %>
+                    </p>
+                    <button id="preview-button"
+                        style="background-color: <%= heroData.buttonColor %>; color: <%= heroData.buttonTextColor %>; border: none; padding: 12px 30px; font-size: 1.1rem; border-radius: 5px; cursor: pointer;">
+                        <%= heroData.buttonText %>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Form -->
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-edit"></i> Edit Hero Section</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" id="settingsForm">
+                    <input type="hidden" name="section_key" value="hero">
+                    <div class="row">
+                        <!-- Text Content -->
+                        <div class="col-md-6">
+                            <h6 class="mb-3"><i class="fas fa-font"></i> Text Content</h6>
+
+                            <div class="mb-3">
+                                <label class="form-label">Main Title</label>
+                                <input type="text" name="title" class="form-control" value="<%= heroData.title %>"
+                                    id="title" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Subtitle</label>
+                                <input type="text" name="subtitle" class="form-control" value="<%= heroData.subtitle %>"
+                                    id="subtitle" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Button Text</label>
+                                <input type="text" name="buttonText" class="form-control"
+                                    value="<%= heroData.buttonText %>" id="buttonText" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Button Link</label>
+                                <input type="text" name="buttonLink" class="form-control"
+                                    value="<%= heroData.buttonLink %>" id="buttonLink" required>
+                            </div>
+                        </div>
+
+                        <!-- Colors & Background -->
+                        <div class="col-md-6">
+                            <h6 class="mb-3"><i class="fas fa-palette"></i> Colors & Background</h6>
+
+                            <div class="mb-3">
+                                <label class="form-label">Background Color</label>
+                                <div class="color-input-group">
+                                    <input type="color" name="backgroundColor" class="form-control form-control-color"
+                                        value="<%= heroData.backgroundColor %>" id="backgroundColor">
+                                    <input type="text" class="form-control" value="<%= heroData.backgroundColor %>"
+                                        id="bgColorText" readonly>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Background Image URL (optional)</label>
+                                <input type="text" name="backgroundImage" class="form-control"
+                                    value="<%= heroData.backgroundImage %>" id="backgroundImage"
+                                    placeholder="https://example.com/image.jpg">
+                                <small class="text-muted">Leave empty to use solid color</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Title Color</label>
+                                <div class="color-input-group">
+                                    <input type="color" name="textColor" class="form-control form-control-color"
+                                        value="<%= heroData.textColor %>" id="textColor">
+                                    <input type="text" class="form-control" value="<%= heroData.textColor %>"
+                                        id="textColorText" readonly>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Subtitle Color</label>
+                                <div class="color-input-group">
+                                    <input type="color" name="subtitleColor" class="form-control form-control-color"
+                                        value="<%= heroData.subtitleColor %>" id="subtitleColor">
+                                    <input type="text" class="form-control" value="<%= heroData.subtitleColor %>"
+                                        id="subtitleColorText" readonly>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Button Background Color</label>
+                                <div class="color-input-group">
+                                    <input type="color" name="buttonColor" class="form-control form-control-color"
+                                        value="<%= heroData.buttonColor %>" id="buttonColor">
+                                    <input type="text" class="form-control" value="<%= heroData.buttonColor %>"
+                                        id="btnColorText" readonly>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Button Text Color</label>
+                                <div class="color-input-group">
+                                    <input type="color" name="buttonTextColor" class="form-control form-control-color"
+                                        value="<%= heroData.buttonTextColor %>" id="buttonTextColor">
+                                    <input type="text" class="form-control" value="<%= heroData.buttonTextColor %>"
+                                        id="btnTextColorText" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                        <a href="/" target="_blank" class="btn btn-outline-secondary">
+                            <i class="fas fa-external-link-alt"></i> View Live Website
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Contact Settings Form -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5><i class="fas fa-address-book"></i> Contact Information</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <input type="hidden" name="section_key" value="contact_info">
+                    <div class="mb-3">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" name="email" class="form-control" value="<%= contactData.email %>" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Phone Number</label>
+                        <input type="text" name="phone" class="form-control" value="<%= contactData.phone %>" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Address</label>
+                        <textarea name="address" class="form-control" rows="3"
+                            required><%= contactData.address %></textarea>
+                    </div>
+
+                    <hr>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Contact Info
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Live preview updates
+        document.getElementById('title').addEventListener('input', (e) => {
+            document.getElementById('preview-title').textContent = e.target.value;
+        });
+
+        document.getElementById('subtitle').addEventListener('input', (e) => {
+            document.getElementById('preview-subtitle').textContent = e.target.value;
+        });
+
+        document.getElementById('buttonText').addEventListener('input', (e) => {
+            document.getElementById('preview-button').textContent = e.target.value;
+        });
+
+        document.getElementById('backgroundColor').addEventListener('input', (e) => {
+            document.getElementById('preview').style.backgroundColor = e.target.value;
+            document.getElementById('bgColorText').value = e.target.value;
+        });
+
+        document.getElementById('backgroundImage').addEventListener('input', (e) => {
+            const url = e.target.value;
+            if (url) {
+                document.getElementById('preview').style.backgroundImage = `url('${url}')`;
+                document.getElementById('preview').style.backgroundSize = 'cover';
+                document.getElementById('preview').style.backgroundPosition = 'center';
+            } else {
+                document.getElementById('preview').style.backgroundImage = 'none';
+            }
+        });
+
+        document.getElementById('textColor').addEventListener('input', (e) => {
+            document.getElementById('preview-title').style.color = e.target.value;
+            document.getElementById('textColorText').value = e.target.value;
+        });
+
+        document.getElementById('subtitleColor').addEventListener('input', (e) => {
+            document.getElementById('preview-subtitle').style.color = e.target.value;
+            document.getElementById('subtitleColorText').value = e.target.value;
+        });
+
+        document.getElementById('buttonColor').addEventListener('input', (e) => {
+            document.getElementById('preview-button').style.backgroundColor = e.target.value;
+            document.getElementById('btnColorText').value = e.target.value;
+        });
+
+        document.getElementById('buttonTextColor').addEventListener('input', (e) => {
+            document.getElementById('preview-button').style.color = e.target.value;
+            document.getElementById('btnTextColorText').value = e.target.value;
+        });
+    </script>
+</body>
+
+</html>

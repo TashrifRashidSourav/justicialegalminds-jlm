@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-50 flex flex-col min-h-screen">
+    <%- include('../partials/header') %>
+
+        <main class="flex-grow">
+            <!-- Breadcrumb & Back -->
+            <div class="bg-white border-b border-gray-200">
+                <div class="container mx-auto px-6 py-4">
+                    <a href="/team"
+                        class="inline-flex items-center text-gray-600 hover:text-primary transition-colors font-medium">
+                        <i class="fas fa-arrow-left mr-2"></i> Back to Team
+                    </a>
+                </div>
+            </div>
+
+            <section class="py-12 md:py-20">
+                <div class="container mx-auto px-6">
+                    <div
+                        class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 max-w-5xl mx-auto">
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-0">
+                            <!-- Left: Image & Info -->
+                            <div
+                                class="md:col-span-5 lg:col-span-4 bg-gray-50 p-8 md:p-10 border-r border-gray-100 flex flex-col items-center md:items-start text-center md:text-left">
+                                <div
+                                    class="relative w-48 h-48 md:w-full md:h-auto md:aspect-square mb-6 rounded-xl overflow-hidden shadow-lg ring-1 ring-gray-200">
+                                    <% if (member.image) { %>
+                                        <img src="<%= member.image %>" alt="<%= member.name %>"
+                                            class="w-full h-full object-cover">
+                                        <% } else { %>
+                                            <div
+                                                class="w-full h-full flex items-center justify-center bg-gray-200 text-6xl text-gray-400">
+                                                <i class="fas fa-user-tie"></i>
+                                            </div>
+                                            <% } %>
+                                </div>
+
+                                <h1 class="text-3xl font-bold text-gray-900 mb-2 font-serif">
+                                    <%= member.name %>
+                                </h1>
+                                <p class="text-primary font-semibold text-lg uppercase tracking-wide mb-6">
+                                    <%= member.role %>
+                                </p>
+
+                                <div class="w-full space-y-4">
+                                    <!-- Placeholders for static content or future dynamic additions -->
+                                    <!-- Dynamic contact info -->
+                                    <% if (member.email) { %>
+                                        <div class="p-4 bg-white rounded-lg shadow-sm border border-gray-100">
+                                            <div class="flex items-center text-gray-600 mb-2">
+                                                <i class="fas fa-envelope w-6 text-primary"></i>
+                                                <span class="font-medium text-sm">Email</span>
+                                            </div>
+                                            <a href="mailto:<%= member.email %>"
+                                                class="text-gray-900 hover:text-primary transition text-sm break-all font-semibold">
+                                                <%= member.email %>
+                                            </a>
+                                        </div>
+                                        <% } %>
+
+                                            <% if (member.phone) { %>
+                                                <div class="p-4 bg-white rounded-lg shadow-sm border border-gray-100">
+                                                    <div class="flex items-center text-gray-600 mb-2">
+                                                        <i class="fas fa-phone w-6 text-primary"></i>
+                                                        <span class="font-medium text-sm">Phone</span>
+                                                    </div>
+                                                    <a href="tel:<%= member.phone %>"
+                                                        class="text-gray-900 hover:text-primary transition text-sm font-semibold">
+                                                        <%= member.phone %>
+                                                    </a>
+                                                </div>
+                                                <% } %>
+                                </div>
+                            </div>
+
+                            <!-- Right: Content -->
+                            <div class="md:col-span-7 lg:col-span-8 p-8 md:p-12">
+                                <h2
+                                    class="text-2xl font-bold text-gray-900 mb-6 pb-4 border-b border-gray-100 flex items-center">
+                                    <i class="fas fa-user-circle mr-3 text-primary"></i> Biography
+                                </h2>
+
+                                <div
+                                    class="prose prose-lg prose-headings:font-serif prose-a:text-primary hover:prose-a:text-primary-dark max-w-none text-gray-600">
+                                    <% if (member.bio) { %>
+                                        <%- member.bio %>
+                                            <% } else { %>
+                                                <p class="text-gray-400 italic">No biography available.</p>
+                                                <% } %>
+                                </div>
+
+                                <div class="mt-12 pt-8 border-t border-gray-100">
+                                    <h3 class="text-xl font-bold text-gray-900 mb-4">Areas of Practice</h3>
+                                    <div class="flex flex-wrap gap-2">
+                                        <% if (member.practice_areas) { %>
+                                            <% member.practice_areas.split(',').forEach(function(area) { %>
+                                                <span
+                                                    class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
+                                                    <%= area.trim() %>
+                                                </span>
+                                                <% }); %>
+                                                    <% } else { %>
+                                                        <span class="text-sm text-gray-500 italic">No specific areas
+                                                            listed.</span>
+                                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <%- include('../partials/footer') %>
+            <script src="/js/main.js"></script>
+</body>
+
+</html>

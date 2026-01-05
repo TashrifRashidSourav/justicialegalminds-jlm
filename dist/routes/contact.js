@@ -1,8 +1,11 @@
-import { Router, Request, Response } from 'express';
-import db from '../database/db';
-
-const router = Router();
-
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const db_1 = __importDefault(require("../database/db"));
+const router = (0, express_1.Router)();
 // Helper to get contact data
 const getContactData = async () => {
     let contactData = {
@@ -10,26 +13,21 @@ const getContactData = async () => {
         phone: '01999585858',
         address: 'ফ্লাট ২/এ , বাড়ি নং ৮৮, রাস্তা ১৭/এ , ব্লক ই ,বনানী,ঢাকা-১২১৩'
     };
-
     try {
-        const [settings] = await db.query<any[]>(
-            "SELECT * FROM page_sections WHERE `key` = 'contact_info'"
-        );
-
+        const [settings] = await db_1.default.query("SELECT * FROM page_sections WHERE `key` = 'contact_info'");
         if (settings.length > 0 && settings[0].data) {
             const data = typeof settings[0].data === 'string' ? JSON.parse(settings[0].data) : settings[0].data;
             contactData = { ...contactData, ...data };
         }
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Error loading contact info:', error);
     }
     return contactData;
 };
-
 // Show contact form
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', async (req, res) => {
     const contactData = await getContactData();
-
     res.render('pages/contact', {
         title: 'Contact Us - Justicia Legal Minds',
         success: false,
@@ -37,12 +35,10 @@ router.get('/', async (req: Request, res: Response) => {
         contactData
     });
 });
-
 // Handle contact form submission
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', async (req, res) => {
     const { name, email, phone, subject, message } = req.body;
     const contactData = await getContactData();
-
     // Validation
     if (!name || !email || !message) {
         return res.render('pages/contact', {
@@ -52,20 +48,16 @@ router.post('/', async (req: Request, res: Response) => {
             contactData
         });
     }
-
     try {
-        await db.query(
-            'INSERT INTO inquiries (name, email, phone, subject, message) VALUES (?, ?, ?, ?, ?)',
-            [name, email, phone || null, subject || null, message]
-        );
-
+        await db_1.default.query('INSERT INTO inquiries (name, email, phone, subject, message) VALUES (?, ?, ?, ?, ?)', [name, email, phone || null, subject || null, message]);
         res.render('pages/contact', {
             title: 'Contact Us - Justicia Legal Minds',
             success: true,
             error: null,
             contactData
         });
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Error saving inquiry:', error);
         res.render('pages/contact', {
             title: 'Contact Us - Justicia Legal Minds',
@@ -75,5 +67,4 @@ router.post('/', async (req: Request, res: Response) => {
         });
     }
 });
-
-export default router;
+exports.default = router;

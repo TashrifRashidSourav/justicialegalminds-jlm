@@ -1,6 +1,5 @@
+# node_modules/ is ignored
 node_modules/
-dist/
 .env
 *.log
 .DS_Store
-public/css/style.css

@@ -1,0 +1,23 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/justicia/public_html/
+    # 1. Copy Compiled Server Code
+    - /bin/cp -R dist/* $DEPLOYPATH/dist/
+    - /bin/cp -R dist/server.js $DEPLOYPATH/
+    
+    # 2. Copy Views (Templates)
+    - /bin/cp -R views $DEPLOYPATH/
+    
+    # 3. Copy Public Assets (CSS, Images, Uploads)
+    - /bin/cp -R public $DEPLOYPATH/
+    
+    # 4. Copy Dependencies List
+    - /bin/cp package.json $DEPLOYPATH/
+    - /bin/cp package-lock.json $DEPLOYPATH/
+    
+    # 5. Copy Startup File (if cPanel needs app.js)
+    - /bin/cp app.js $DEPLOYPATH/
+
+    # 6. Install Drivers (Production Only)
+    - /usr/bin/npm install --production --prefix $DEPLOYPATH

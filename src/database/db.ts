@@ -4,26 +4,18 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Parse DATABASE_URL
-const dbUrl = process.env.DATABASE_URL || '';
-const urlMatch = dbUrl.match(/mysql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/);
+const dbUrl = process.env.DATABASE_URL;
 
-if (!urlMatch) {
-    throw new Error('Invalid DATABASE_URL format');
+if (!dbUrl) {
+    console.error('❌ DATABASE_URL is missing in .env');
+    // We don't throw here to allow app to start and show error page if needed, 
+    // but without DB it will eventually fail. 
+    // Better to fail fast for cPanel logging.
+    throw new Error('DATABASE_URL is missing in .env');
 }
 
-const [, user, password, host, port, database] = urlMatch;
-
-// Create connection pool
-const pool = mysql.createPool({
-    host,
-    port: parseInt(port),
-    user,
-    password,
-    database,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
-});
+// Create connection pool directly from URL string - significantly more robust than regex
+const pool = mysql.createPool(dbUrl);
 
 // Test connection
 pool.getConnection()

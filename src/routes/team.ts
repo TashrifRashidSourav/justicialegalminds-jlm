@@ -33,4 +33,28 @@ router.get('/', async (req: Request, res: Response) => {
     }
 });
 
+router.get('/:id', async (req: Request, res: Response) => {
+    try {
+        const [rows] = await db.query<TeamMember[]>(
+            'SELECT * FROM team_members WHERE id = ? AND is_active = true',
+            [req.params.id]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).render('pages/404', { title: 'Member Not Found' });
+        }
+
+        res.render('pages/team-member', {
+            title: `${rows[0].name} - Justicia Legal Minds`,
+            member: rows[0]
+        });
+    } catch (error) {
+        console.error('Error fetching team member:', error);
+        res.status(500).render('pages/error', {
+            title: 'Error',
+            message: 'Failed to load team member profile'
+        });
+    }
+});
+
 export default router;

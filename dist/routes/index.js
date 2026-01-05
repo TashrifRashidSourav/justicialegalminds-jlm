@@ -1,31 +1,17 @@
-import { Router, Request, Response } from 'express';
-import db from '../database/db';
-import { RowDataPacket } from 'mysql2/promise';
-
-interface Service extends RowDataPacket {
-    id: number;
-    title: string;
-    slug: string;
-    description: string | null;
-    icon: string | null;
-    is_active: boolean;
-    sort_order: number;
-}
-
-const router = Router();
-
-router.get('/', async (req: Request, res: Response) => {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const db_1 = __importDefault(require("../database/db"));
+const router = (0, express_1.Router)();
+router.get('/', async (req, res) => {
     try {
         // Fetch featured services (first 3)
-        const [services] = await db.query<Service[]>(
-            'SELECT * FROM services WHERE is_active = true ORDER BY sort_order LIMIT 3'
-        );
-
+        const [services] = await db_1.default.query('SELECT * FROM services WHERE is_active = true ORDER BY sort_order LIMIT 3');
         // Fetch hero settings
-        const [settings] = await db.query<RowDataPacket[]>(
-            "SELECT * FROM page_sections WHERE `key` = 'hero'"
-        );
-
+        const [settings] = await db_1.default.query("SELECT * FROM page_sections WHERE `key` = 'hero'");
         let heroData = {
             title: 'Justicia Legal Minds',
             subtitle: 'Expert Legal Solutions for Your Peace of Mind',
@@ -38,20 +24,19 @@ router.get('/', async (req: Request, res: Response) => {
             buttonTextColor: '#000000',
             backgroundImage: ''
         };
-
         if (settings.length > 0 && settings[0].data) {
             const data = typeof settings[0].data === 'string'
                 ? JSON.parse(settings[0].data)
                 : settings[0].data;
             heroData = { ...heroData, ...data };
         }
-
         res.render('pages/home', {
             title: 'Justicia Legal Minds - Expert Legal Solutions',
             services,
             heroData
         });
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Error fetching services:', error);
         res.render('pages/home', {
             title: 'Justicia Legal Minds - Expert Legal Solutions',
@@ -59,5 +44,4 @@ router.get('/', async (req: Request, res: Response) => {
         });
     }
 });
-
-export default router;
+exports.default = router;
